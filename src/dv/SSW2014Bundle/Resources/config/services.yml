@@ -1,0 +1,7 @@
+parameters:
+#    dv_ssw2014.example.class: dv\SSW2014Bundle\Example
+
+services:
+#    dv_ssw2014.example:
+#        class: %dv_ssw2014.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

@@ -1,0 +1,4 @@
+dv_ssw2014:
+    resource: "@dvSSW2014Bundle/Resources/config/routing.yml"
+    prefix:   /
+
