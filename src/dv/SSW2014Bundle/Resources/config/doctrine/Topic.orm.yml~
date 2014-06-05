@@ -21,7 +21,7 @@ dv\SSW2014Bundle\Entity\Topic:
       nullable: true
   oneToMany:
     categories:
-      targetEntity: TopicCategory
+      targetEntity: CategoryTopic
       mappedBy: topic
   lifecycleCallbacks:
     prePersist: [ setCreatedAtValue ]

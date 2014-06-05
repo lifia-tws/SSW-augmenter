@@ -20,7 +20,7 @@
 
 http://www.ens.ro/2012/03/27/symfony2-jobeet-day-3-the-data-model/
 
-php app/console doctrine:generate:entities EnsJobeetBundle
+php app/console doctrine:generate:entities dvSSW2014Bundle
 php app/console doctrine:schema:update --force
 php app/console doctrine:generate:crud --entity=EnsJobeetBundle:Job --route-prefix=ens_job --with-write --format=yml
 php app/console cache:clear

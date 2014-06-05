@@ -5,9 +5,9 @@ namespace dv\SSW2014Bundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Topic
+ * TopicCategory
  */
-class Topic
+class TopicCategory
 {
     /**
      * @var integer
@@ -18,11 +18,6 @@ class Topic
      * @var string
      */
     private $name;
-
-    /**
-     * @var string
-     */
-    private $isPrimaryTopicOf;
 
     /**
      * @var \DateTime
@@ -49,7 +44,7 @@ class Topic
      * Set name
      *
      * @param string $name
-     * @return Topic
+     * @return TopicCategory
      */
     public function setName($name)
     {
@@ -69,33 +64,10 @@ class Topic
     }
 
     /**
-     * Set isPrimaryTopicOf
-     *
-     * @param string $isPrimaryTopicOf
-     * @return Topic
-     */
-    public function setIsPrimaryTopicOf($isPrimaryTopicOf)
-    {
-        $this->isPrimaryTopicOf = $isPrimaryTopicOf;
-
-        return $this;
-    }
-
-    /**
-     * Get isPrimaryTopicOf
-     *
-     * @return string 
-     */
-    public function getIsPrimaryTopicOf()
-    {
-        return $this->isPrimaryTopicOf;
-    }
-
-    /**
      * Set created_at
      *
      * @param \DateTime $createdAt
-     * @return Topic
+     * @return TopicCategory
      */
     public function setCreatedAt($createdAt)
     {
@@ -118,7 +90,7 @@ class Topic
      * Set updated_at
      *
      * @param \DateTime $updatedAt
-     * @return Topic
+     * @return TopicCategory
      */
     public function setUpdatedAt($updatedAt)
     {
@@ -150,50 +122,5 @@ class Topic
     public function setUpdatedAtValue()
     {
         // Add your code here
-    }
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $categories;
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->categories = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
-    /**
-     * Add categories
-     *
-     * @param \dv\SSW2014Bundle\Entity\CategoryTopic $categories
-     * @return Topic
-     */
-    public function addCategory(\dv\SSW2014Bundle\Entity\CategoryTopic $categories)
-    {
-        $this->categories[] = $categories;
-
-        return $this;
-    }
-
-    /**
-     * Remove categories
-     *
-     * @param \dv\SSW2014Bundle\Entity\CategoryTopic $categories
-     */
-    public function removeCategory(\dv\SSW2014Bundle\Entity\CategoryTopic $categories)
-    {
-        $this->categories->removeElement($categories);
-    }
-
-    /**
-     * Get categories
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getCategories()
-    {
-        return $this->categories;
     }
 }

@@ -171,6 +171,10 @@ class Query
 
     public function toJSON()
     {
-
+      return array(
+        'id' => $this->getId(),
+        'name' => $this->getName(),
+        'template' => $this->getTemplate()
+      );
     }
 }

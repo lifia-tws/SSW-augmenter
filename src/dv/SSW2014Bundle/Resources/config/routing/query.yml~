@@ -3,7 +3,7 @@ query:
     defaults: { _controller: "dvSSW2014Bundle:Query:index" }
 
 query_all:
-    pattern:  /    
+    pattern:  /all.json    
     defaults: { _controller: "dvSSW2014Bundle:Query:all" }
 
 query_one:
@@ -17,6 +17,11 @@ query_show:
 query_new:
     pattern:  /new
     defaults: { _controller: "dvSSW2014Bundle:Query:new" }
+
+query_put:
+    pattern:  /put
+    defaults: { _controller: "dvSSW2014Bundle:Query:put" }
+    requirements: { _method: put }
 
 query_create:
     pattern:  /create

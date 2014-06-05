@@ -30,6 +30,20 @@ class QueryController extends Controller
             'entities' => $entities,
         ));
     }
+
+    public function putAction(Request $request)
+    {
+      $entity = new Query();
+
+      $response = new Response(json_encode($json));
+
+      $response->headers->set('Content-Type', 'application/json');
+
+      return $response;
+      
+
+    }
+
     /**
      * Creates a new Query entity.
      *
