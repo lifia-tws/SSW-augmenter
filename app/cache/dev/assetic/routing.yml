@@ -2,4 +2,4 @@ _assetic:
     resource: .
     type: assetic
 _app:
-    resource: /var/www/SSW-augmenter/app/config/routing_dev.yml
+    resource: /var/www/ssw2014/app/config/routing_dev.yml

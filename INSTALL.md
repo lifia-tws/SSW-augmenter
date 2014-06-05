@@ -1,0 +1,26 @@
+1) Add a new virtual host
+
+<VirtualHost *:80>
+    ServerName ssw.local
+    ServerAlias www.ssw.local
+
+    DocumentRoot /var/www/ssw2014/web
+    DirectoryIndex app.php
+    <Directory "/var/www/ssw2014/web">
+        AllowOverride All
+        Order allow,deny
+        Allow from All
+    </Directory>
+
+    ErrorLog /var/log/apache2/error.log
+    CustomLog /var/log/apache2/access.log combined
+</VirtualHost>
+
+2) 
+
+http://www.ens.ro/2012/03/27/symfony2-jobeet-day-3-the-data-model/
+
+php app/console doctrine:generate:entities EnsJobeetBundle
+php app/console doctrine:schema:update --force
+php app/console doctrine:generate:crud --entity=EnsJobeetBundle:Job --route-prefix=ens_job --with-write --format=yml
+php app/console cache:clear

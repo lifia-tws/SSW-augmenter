@@ -1,0 +1,7 @@
+dv_ssw2014_query:
+    resource: "@dvSSW2014Bundle/Resources/config/routing/query.yml"
+    prefix: /query
+
+dv_ssw2014_homepage:
+    pattern:  /hello/{name}
+    defaults: { _controller: dvSSW2014Bundle:Default:index }

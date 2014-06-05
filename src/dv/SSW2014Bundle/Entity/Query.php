@@ -151,6 +151,8 @@ class Query
     {
         return $this->updated_at;
     }
+
+/*
     
     public function setCreatedAtValue()
     {
@@ -163,5 +165,16 @@ class Query
     public function setUpdatedAtValue()
     {
       $this->updated_at = new DateTime();
+    }
+
+*/
+
+    public function toJSON()
+    {
+      return array(
+        'id' => $this->getId(),
+        'name' => $this->getName(),
+        'template' => $this->getTemplate()
+      );
     }
 }
