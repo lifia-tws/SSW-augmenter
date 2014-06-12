@@ -15,6 +15,60 @@ use dv\SSW2014Bundle\Form\QueryType;
  */
 class QueryController extends Controller
 {
+    public function loadQueriesAction()
+    {        
+        $em = $this->getDoctrine()->getManager();
+        $r = $this->getDoctrine()->getRepository('dvSSW2014Bundle:Query');
+
+        if ($r->findOneBy(array('name' => 'peopleSameAgeSameCountry')) == null)
+        {
+            $peopleSameAgeSameCountry = new Query();
+            $peopleSameAgeSameCountry->setName('peopleSameAgeSameCountry');
+            $peopleSameAgeSameCountry->setTemplate('select distinct ?name, ?isPrimaryTopicOf { ?subject foaf:isPrimaryTopicOf <%%isPrimaryTopicOf%%> . ?subject dbpedia-owl:birthYear ?birthYear . ?subject dbpedia-owl:birthPlace ?birthPlace . ?birthPlace a dbpedia-owl:Country . ?relatedSubject a dbpedia-owl:Person . ?relatedSubject dbpedia-owl:birthYear ?birthYear . ?relatedSubject dbpedia-owl:birthPlace ?birthPlace . ?relatedSubject foaf:name ?name . ?relatedSubject foaf:isPrimaryTopicOf ?isPrimaryTopicOf } order by ?name limit 10 offset %%offset%%');
+            $peopleSameAgeSameCountry->setCreatedAt(new \DateTime('today'));
+
+            $em->persist($peopleSameAgeSameCountry);
+        }
+
+
+        if ($r->findOneBy(array('name' => 'citiesInThisCountry')) == null)
+        {
+            $citiesInThisCountry = new Query();
+            $citiesInThisCountry->setName('citiesInThisCountry');
+            $citiesInThisCountry->setTemplate('select distinct ?name, ?isPrimaryTopicOf { ?subject foaf:isPrimaryTopicOf <%%isPrimaryTopicOf%%> . ?relatedSubject dbpedia-owl:country ?subject . ?relatedSubject a dbpedia-owl:City . ?relatedSubject foaf:name ?name . ?relatedSubject foaf:isPrimaryTopicOf ?isPrimaryTopicOf } order by ?name limit 10 offset %%offset%%');
+            $citiesInThisCountry->setCreatedAt(new \DateTime('today'));
+
+            $em->persist($citiesInThisCountry);
+        }
+
+
+        if ($r->findOneBy(array('name' => 'semanticPropertiesAsSubject')) == null)
+        {
+            $semanticPropertiesAsSubject = new Query();
+            $semanticPropertiesAsSubject->setName('semanticPropertiesAsSubject');
+            $semanticPropertiesAsSubject->setTemplate('select distinct ?property { ?subject foaf:isPrimaryTopicOf <%%isPrimaryTopicOf%%> . ?resource a ?subject . ?resource ?property ?object } order by ?property limit 10 offset %%offset%%');
+            $semanticPropertiesAsSubject->setCreatedAt(new \DateTime('today'));
+
+            $em->persist($semanticPropertiesAsSubject);
+        }
+
+
+        if ($r->findOneBy(array('name' => 'semanticPropertiesAsObject')) == null)
+        {
+            $semanticPropertiesAsObject = new Query();
+            $semanticPropertiesAsObject->setName('semanticPropertiesAsObject');
+            $semanticPropertiesAsObject->setTemplate('select distinct ?property { ?subject foaf:isPrimaryTopicOf <%%isPrimaryTopicOf%%> . ?resource a ?subject . ?resource ?property ?object } order by ?property limit 10 offset %%offset%%');
+            $semanticPropertiesAsObject->setCreatedAt(new \DateTime('today'));
+
+            $em->persist($semanticPropertiesAsObject);
+        }
+
+        $em->flush();
+
+        echo "Queries added succesfully!";
+
+        die();
+    }
 
     /**
      * Lists all Query entities.

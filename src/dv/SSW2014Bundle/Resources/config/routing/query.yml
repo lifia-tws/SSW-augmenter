@@ -41,3 +41,8 @@ query_delete:
     pattern:  /{id}/delete
     defaults: { _controller: "dvSSW2014Bundle:Query:delete" }
     requirements: { _method: post|delete }
+
+query_load_queries:
+    pattern: /loadQueries
+    defaults: { _controller: "dvSSW2014Bundle:Query:loadQueries" }
+

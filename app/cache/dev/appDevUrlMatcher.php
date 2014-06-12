@@ -165,6 +165,17 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
                 return array (  '_controller' => 'dv\\SSW2014Bundle\\Controller\\QueryController::newAction',  '_route' => 'query_new',);
             }
 
+            // query_put
+            if ($pathinfo === '/query/put') {
+                if ($this->context->getMethod() != 'PUT') {
+                    $allow[] = 'PUT';
+                    goto not_query_put;
+                }
+
+                return array (  '_controller' => 'dv\\SSW2014Bundle\\Controller\\QueryController::putAction',  '_route' => 'query_put',);
+            }
+            not_query_put:
+
             // query_create
             if ($pathinfo === '/query/create') {
                 if ($this->context->getMethod() != 'POST') {
@@ -202,6 +213,11 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
                 return $this->mergeDefaults(array_replace($matches, array('_route' => 'query_delete')), array (  '_controller' => 'dv\\SSW2014Bundle\\Controller\\QueryController::deleteAction',));
             }
             not_query_delete:
+
+            // query_load_queries
+            if ($pathinfo === '/query/loadQueries') {
+                return array (  '_controller' => 'dv\\SSW2014Bundle\\Controller\\QueryController::loadQueriesAction',  '_route' => 'query_load_queries',);
+            }
 
         }
 
