@@ -10,7 +10,11 @@ dv\SSW2014Bundle\Entity\Query:
       type: string
       length: 255
       unique: true
-    template:
+    label:
+      type: string
+      length: 255
+      unique: true
+    query:
       type: text
     created_at:
       type: datetime

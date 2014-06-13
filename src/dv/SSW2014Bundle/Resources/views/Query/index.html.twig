@@ -1,21 +1,29 @@
-{% extends 'dvSSW2014Bundle::layout.html.twig' %}
+{% extends '::base.html.twig' %}
 
 {% block body -%}
     <h1>Query list</h1>
 
-    <table class="records_list table table-hover">
+    <table class="records_list">
         <thead>
             <tr>
+                <th>Id</th>
                 <th>Name</th>
-                <th>Template</th>
+                <th>Label</th>
+                <th>Query</th>
+                <th>Created_at</th>
+                <th>Updated_at</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
         {% for entity in entities %}
             <tr>
-                <td><a href="{{ path('query_show', { 'id': entity.id }) }}">{{ entity.name }}</a></td>
-                <td>{{ entity.template }}</td>
+                <td><a href="{{ path('query_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+                <td>{{ entity.name }}</td>
+                <td>{{ entity.label }}</td>
+                <td>{{ entity.query }}</td>
+                <td>{% if entity.createdat %}{{ entity.createdat|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{% if entity.updatedat %}{{ entity.updatedat|date('Y-m-d H:i:s') }}{% endif %}</td>
                 <td>
                 <ul>
                     <li>
@@ -31,13 +39,11 @@
         </tbody>
     </table>
 
-    <ul>
-      <li>
-        <button type="button" class="btn btn-default">
-          <a href="{{ path('query_new') }}">
-            Create a new entry
-          </a>
-        </button>
-      </li>
+        <ul>
+        <li>
+            <a href="{{ path('query_new') }}">
+                Create a new entry
+            </a>
+        </li>
     </ul>
     {% endblock %}

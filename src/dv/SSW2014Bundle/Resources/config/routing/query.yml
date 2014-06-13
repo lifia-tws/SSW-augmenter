@@ -3,12 +3,12 @@ query:
     defaults: { _controller: "dvSSW2014Bundle:Query:index" }
 
 query_all:
-    pattern:  /all.json    
+    pattern:  /all.json
     defaults: { _controller: "dvSSW2014Bundle:Query:all" }
 
-query_one:
-    pattern:  /{id}.json
-    defaults: { _controller: "dvSSW2014Bundle:Query:one" }
+query_load_queries:
+    pattern:  /loadQueries
+    defaults: { _controller: "dvSSW2014Bundle:Query:loadQueries" }
 
 query_show:
     pattern:  /{id}/show
@@ -17,11 +17,6 @@ query_show:
 query_new:
     pattern:  /new
     defaults: { _controller: "dvSSW2014Bundle:Query:new" }
-
-query_put:
-    pattern:  /put
-    defaults: { _controller: "dvSSW2014Bundle:Query:put" }
-    requirements: { _method: put }
 
 query_create:
     pattern:  /create
@@ -41,8 +36,3 @@ query_delete:
     pattern:  /{id}/delete
     defaults: { _controller: "dvSSW2014Bundle:Query:delete" }
     requirements: { _method: post|delete }
-
-query_load_queries:
-    pattern: /loadQueries
-    defaults: { _controller: "dvSSW2014Bundle:Query:loadQueries" }
-

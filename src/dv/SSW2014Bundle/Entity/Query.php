@@ -9,6 +9,16 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Query
 {
+    public function toJSON()
+    {
+        return array(
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+            'label' => $this->getLabel(),
+            'query' => $this->getQuery()
+        );
+    }
+
     /**
      * @var integer
      */
@@ -22,7 +32,22 @@ class Query
     /**
      * @var string
      */
-    private $template;
+    private $label;
+
+    /**
+     * @var string
+     */
+    private $query;
+
+    /**
+     * @var \DateTime
+     */
+    private $created_at;
+
+    /**
+     * @var \DateTime
+     */
+    private $updated_at;
 
 
     /**
@@ -59,52 +84,50 @@ class Query
     }
 
     /**
-     * Set template
+     * Set label
      *
-     * @param string $template
+     * @param string $label
      * @return Query
      */
-    public function setTemplate($template)
+    public function setLabel($label)
     {
-        $this->template = $template;
+        $this->label = $label;
 
         return $this;
     }
 
     /**
-     * Get template
+     * Get label
      *
      * @return string 
      */
-    public function getTemplate()
+    public function getLabel()
     {
-        return $this->template;
-    }
-    /**
-     * @ORM\PrePersist
-     */
-    public function setCreatedAtValue()
-    {
-        // Add your code here
+        return $this->label;
     }
 
     /**
-     * @ORM\PreUpdate
+     * Set query
+     *
+     * @param string $query
+     * @return Query
      */
-    public function setUpdatedAtValue()
+    public function setQuery($query)
     {
-        // Add your code here
+        $this->query = $query;
+
+        return $this;
     }
-    /**
-     * @var \DateTime
-     */
-    private $created_at;
 
     /**
-     * @var \DateTime
+     * Get query
+     *
+     * @return string 
      */
-    private $updated_at;
-
+    public function getQuery()
+    {
+        return $this->query;
+    }
 
     /**
      * Set created_at
@@ -151,30 +174,19 @@ class Query
     {
         return $this->updated_at;
     }
-
-/*
-    
+    /**
+     * @ORM\PrePersist
+     */
     public function setCreatedAtValue()
     {
-      if(!$this->getCreatedAt())
-      {
-        $this->created_at = new DateTime();
-      }
+        // Add your code here
     }
-    
+
+    /**
+     * @ORM\PreUpdate
+     */
     public function setUpdatedAtValue()
     {
-      $this->updated_at = new DateTime();
-    }
-
-*/
-
-    public function toJSON()
-    {
-      return array(
-        'id' => $this->getId(),
-        'name' => $this->getName(),
-        'template' => $this->getTemplate()
-      );
+        // Add your code here
     }
 }

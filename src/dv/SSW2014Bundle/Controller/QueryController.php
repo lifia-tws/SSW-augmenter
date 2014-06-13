@@ -15,6 +15,24 @@ use dv\SSW2014Bundle\Form\QueryType;
  */
 class QueryController extends Controller
 {
+    public function allAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $entities = $em->getRepository('dvSSW2014Bundle:Query')->findAll();
+
+        foreach ($entities as $entity)
+        {
+            $results[] = $entity->toJSON();
+        }
+
+        $response = new Response(json_encode(array('status' => 'success', 'data' => array('queries' => $results))));        
+        $response->setStatusCode(Response::HTTP_OK);
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+    }
+
     public function loadQueriesAction()
     {        
         $em = $this->getDoctrine()->getManager();
@@ -24,7 +42,8 @@ class QueryController extends Controller
         {
             $peopleSameAgeSameCountry = new Query();
             $peopleSameAgeSameCountry->setName('peopleSameAgeSameCountry');
-            $peopleSameAgeSameCountry->setTemplate('select distinct ?name, ?isPrimaryTopicOf { ?subject foaf:isPrimaryTopicOf <%%isPrimaryTopicOf%%> . ?subject dbpedia-owl:birthYear ?birthYear . ?subject dbpedia-owl:birthPlace ?birthPlace . ?birthPlace a dbpedia-owl:Country . ?relatedSubject a dbpedia-owl:Person . ?relatedSubject dbpedia-owl:birthYear ?birthYear . ?relatedSubject dbpedia-owl:birthPlace ?birthPlace . ?relatedSubject foaf:name ?name . ?relatedSubject foaf:isPrimaryTopicOf ?isPrimaryTopicOf } order by ?name limit 10 offset %%offset%%');
+            $peopleSameAgeSameCountry->setLabel('People born in the same country and the same year');
+            $peopleSameAgeSameCountry->setQuery('select distinct ?name, ?isPrimaryTopicOf { ?subject foaf:isPrimaryTopicOf <%%isPrimaryTopicOf%%> . ?subject dbpedia-owl:birthYear ?birthYear . ?subject dbpedia-owl:birthPlace ?birthPlace . ?birthPlace a dbpedia-owl:Country . ?relatedSubject a dbpedia-owl:Person . ?relatedSubject dbpedia-owl:birthYear ?birthYear . ?relatedSubject dbpedia-owl:birthPlace ?birthPlace . ?relatedSubject foaf:name ?name . ?relatedSubject foaf:isPrimaryTopicOf ?isPrimaryTopicOf } order by ?name limit 10 offset %%offset%%');
             $peopleSameAgeSameCountry->setCreatedAt(new \DateTime('today'));
 
             $em->persist($peopleSameAgeSameCountry);
@@ -35,7 +54,8 @@ class QueryController extends Controller
         {
             $citiesInThisCountry = new Query();
             $citiesInThisCountry->setName('citiesInThisCountry');
-            $citiesInThisCountry->setTemplate('select distinct ?name, ?isPrimaryTopicOf { ?subject foaf:isPrimaryTopicOf <%%isPrimaryTopicOf%%> . ?relatedSubject dbpedia-owl:country ?subject . ?relatedSubject a dbpedia-owl:City . ?relatedSubject foaf:name ?name . ?relatedSubject foaf:isPrimaryTopicOf ?isPrimaryTopicOf } order by ?name limit 10 offset %%offset%%');
+            $citiesInThisCountry->setLabel('Cities in this country');
+            $citiesInThisCountry->setQuery('select distinct ?name, ?isPrimaryTopicOf { ?subject foaf:isPrimaryTopicOf <%%isPrimaryTopicOf%%> . ?relatedSubject dbpedia-owl:country ?subject . ?relatedSubject a dbpedia-owl:City . ?relatedSubject foaf:name ?name . ?relatedSubject foaf:isPrimaryTopicOf ?isPrimaryTopicOf } order by ?name limit 10 offset %%offset%%');
             $citiesInThisCountry->setCreatedAt(new \DateTime('today'));
 
             $em->persist($citiesInThisCountry);
@@ -46,7 +66,8 @@ class QueryController extends Controller
         {
             $semanticPropertiesAsSubject = new Query();
             $semanticPropertiesAsSubject->setName('semanticPropertiesAsSubject');
-            $semanticPropertiesAsSubject->setTemplate('select distinct ?property { ?subject foaf:isPrimaryTopicOf <%%isPrimaryTopicOf%%> . ?resource a ?subject . ?resource ?property ?object } order by ?property limit 10 offset %%offset%%');
+            $semanticPropertiesAsSubject->setLabel('Semantic properties as subject');
+            $semanticPropertiesAsSubject->setQuery('select distinct ?property { ?subject foaf:isPrimaryTopicOf <%%isPrimaryTopicOf%%> . ?resource a ?subject . ?resource ?property ?object } order by ?property limit 10 offset %%offset%%');
             $semanticPropertiesAsSubject->setCreatedAt(new \DateTime('today'));
 
             $em->persist($semanticPropertiesAsSubject);
@@ -56,8 +77,9 @@ class QueryController extends Controller
         if ($r->findOneBy(array('name' => 'semanticPropertiesAsObject')) == null)
         {
             $semanticPropertiesAsObject = new Query();
+            $semanticPropertiesAsObject->setLabel('Semantic properties as object');
             $semanticPropertiesAsObject->setName('semanticPropertiesAsObject');
-            $semanticPropertiesAsObject->setTemplate('select distinct ?property { ?subject foaf:isPrimaryTopicOf <%%isPrimaryTopicOf%%> . ?resource a ?subject . ?resource ?property ?object } order by ?property limit 10 offset %%offset%%');
+            $semanticPropertiesAsObject->setQuery('select distinct ?property { ?subject foaf:isPrimaryTopicOf <%%isPrimaryTopicOf%%> . ?resource a ?subject . ?resource ?property ?object } order by ?property limit 10 offset %%offset%%');
             $semanticPropertiesAsObject->setCreatedAt(new \DateTime('today'));
 
             $em->persist($semanticPropertiesAsObject);
@@ -69,6 +91,7 @@ class QueryController extends Controller
 
         die();
     }
+
 
     /**
      * Lists all Query entities.
@@ -84,20 +107,6 @@ class QueryController extends Controller
             'entities' => $entities,
         ));
     }
-
-    public function putAction(Request $request)
-    {
-      $entity = new Query();
-
-      $response = new Response(json_encode($json));
-
-      $response->headers->set('Content-Type', 'application/json');
-
-      return $response;
-      
-
-    }
-
     /**
      * Creates a new Query entity.
      *
@@ -154,53 +163,6 @@ class QueryController extends Controller
             'entity' => $entity,
             'form'   => $form->createView(),
         ));
-    }
-
-    public function allAction()
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        $entities = $em->getRepository('dvSSW2014Bundle:Query')->findAll();
-
-        $queries = array();
-
-        foreach ($entities as $entity)
-        {
-          $queries[] = $entity->toJSON();
-        }
-
-        $json = array(
-          'status' => 'success',
-          'data' => array(
-            'queries' => $queries
-          )
-        );
-
-        $response = new Response(json_encode($json));
-
-        $response->headers->set('Content-Type', 'application/json');
-
-        return $response;
-    }
-
-    public function oneAction($id)
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        $entity = $em->getRepository('dvSSW2014Bundle:Query')->find($id);
-
-        $json = array(
-          'status' => 'success',
-          'data' => array(
-            'query' => $entity->toJSON()
-          )
-        );
-
-        $response = new Response(json_encode($json));
-
-        $response->headers->set('Content-Type', 'application/json');
-
-        return $response;
     }
 
     /**

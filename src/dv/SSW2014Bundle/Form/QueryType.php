@@ -16,7 +16,8 @@ class QueryType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('template')
+            ->add('label')
+            ->add('query')
             ->add('created_at')
             ->add('updated_at')
         ;
