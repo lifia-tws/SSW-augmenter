@@ -10,11 +10,11 @@ dv\SSW2014Bundle\Entity\Query:
       type: string
       length: 255
       unique: true
-    label:
+    slug:
       type: string
       length: 255
       unique: true
-    query:
+    template:
       type: text
     created_at:
       type: datetime

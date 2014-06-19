@@ -1,0 +1,30 @@
+entity_category:
+    pattern:  /
+    defaults: { _controller: "dvSSW2014Bundle:EntityCategory:index" }
+
+entity_category_show:
+    pattern:  /{id}/show
+    defaults: { _controller: "dvSSW2014Bundle:EntityCategory:show" }
+
+entity_category_new:
+    pattern:  /new
+    defaults: { _controller: "dvSSW2014Bundle:EntityCategory:new" }
+
+entity_category_create:
+    pattern:  /create
+    defaults: { _controller: "dvSSW2014Bundle:EntityCategory:create" }
+    requirements: { _method: post }
+
+entity_category_edit:
+    pattern:  /{id}/edit
+    defaults: { _controller: "dvSSW2014Bundle:EntityCategory:edit" }
+
+entity_category_update:
+    pattern:  /{id}/update
+    defaults: { _controller: "dvSSW2014Bundle:EntityCategory:update" }
+    requirements: { _method: post|put }
+
+entity_category_delete:
+    pattern:  /{id}/delete
+    defaults: { _controller: "dvSSW2014Bundle:EntityCategory:delete" }
+    requirements: { _method: post|delete }

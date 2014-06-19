@@ -1,0 +1,23 @@
+dv\SSW2014Bundle\Entity\EntityCategory:
+  type: entity
+  table: entity_category
+  id:
+    id:
+      type: integer
+      generator: { strategy: AUTO }
+  fields:
+    rating:
+      type: integer
+  manyToOne:
+    entity:
+      targetEntity: Entity
+      inversedBy: entity_categories
+      joinColumn:
+        name: entity_id
+        referencedColumnName: id
+    category:
+      targetEntity: Category
+      inversedBy: category_entities
+      joinColumn:
+        name: category_id
+        referencedColumnName: id

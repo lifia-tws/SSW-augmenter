@@ -135,6 +135,186 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
 
         }
 
+        if (0 === strpos($pathinfo, '/category')) {
+            // category
+            if (rtrim($pathinfo, '/') === '/category') {
+                if (substr($pathinfo, -1) !== '/') {
+                    return $this->redirect($pathinfo.'/', 'category');
+                }
+
+                return array (  '_controller' => 'dv\\SSW2014Bundle\\Controller\\CategoryController::indexAction',  '_route' => 'category',);
+            }
+
+            // category_show
+            if (preg_match('#^/category/(?P<id>[^/]++)/show$#s', $pathinfo, $matches)) {
+                return $this->mergeDefaults(array_replace($matches, array('_route' => 'category_show')), array (  '_controller' => 'dv\\SSW2014Bundle\\Controller\\CategoryController::showAction',));
+            }
+
+            // category_new
+            if ($pathinfo === '/category/new') {
+                return array (  '_controller' => 'dv\\SSW2014Bundle\\Controller\\CategoryController::newAction',  '_route' => 'category_new',);
+            }
+
+            // category_create
+            if ($pathinfo === '/category/create') {
+                if ($this->context->getMethod() != 'POST') {
+                    $allow[] = 'POST';
+                    goto not_category_create;
+                }
+
+                return array (  '_controller' => 'dv\\SSW2014Bundle\\Controller\\CategoryController::createAction',  '_route' => 'category_create',);
+            }
+            not_category_create:
+
+            // category_edit
+            if (preg_match('#^/category/(?P<id>[^/]++)/edit$#s', $pathinfo, $matches)) {
+                return $this->mergeDefaults(array_replace($matches, array('_route' => 'category_edit')), array (  '_controller' => 'dv\\SSW2014Bundle\\Controller\\CategoryController::editAction',));
+            }
+
+            // category_update
+            if (preg_match('#^/category/(?P<id>[^/]++)/update$#s', $pathinfo, $matches)) {
+                if (!in_array($this->context->getMethod(), array('POST', 'PUT'))) {
+                    $allow = array_merge($allow, array('POST', 'PUT'));
+                    goto not_category_update;
+                }
+
+                return $this->mergeDefaults(array_replace($matches, array('_route' => 'category_update')), array (  '_controller' => 'dv\\SSW2014Bundle\\Controller\\CategoryController::updateAction',));
+            }
+            not_category_update:
+
+            // category_delete
+            if (preg_match('#^/category/(?P<id>[^/]++)/delete$#s', $pathinfo, $matches)) {
+                if (!in_array($this->context->getMethod(), array('POST', 'DELETE'))) {
+                    $allow = array_merge($allow, array('POST', 'DELETE'));
+                    goto not_category_delete;
+                }
+
+                return $this->mergeDefaults(array_replace($matches, array('_route' => 'category_delete')), array (  '_controller' => 'dv\\SSW2014Bundle\\Controller\\CategoryController::deleteAction',));
+            }
+            not_category_delete:
+
+        }
+
+        if (0 === strpos($pathinfo, '/entity')) {
+            // entity
+            if (rtrim($pathinfo, '/') === '/entity') {
+                if (substr($pathinfo, -1) !== '/') {
+                    return $this->redirect($pathinfo.'/', 'entity');
+                }
+
+                return array (  '_controller' => 'dv\\SSW2014Bundle\\Controller\\EntityController::indexAction',  '_route' => 'entity',);
+            }
+
+            // entity_show
+            if (preg_match('#^/entity/(?P<id>[^/]++)/show$#s', $pathinfo, $matches)) {
+                return $this->mergeDefaults(array_replace($matches, array('_route' => 'entity_show')), array (  '_controller' => 'dv\\SSW2014Bundle\\Controller\\EntityController::showAction',));
+            }
+
+            // entity_new
+            if ($pathinfo === '/entity/new') {
+                return array (  '_controller' => 'dv\\SSW2014Bundle\\Controller\\EntityController::newAction',  '_route' => 'entity_new',);
+            }
+
+            // entity_create
+            if ($pathinfo === '/entity/create') {
+                if ($this->context->getMethod() != 'POST') {
+                    $allow[] = 'POST';
+                    goto not_entity_create;
+                }
+
+                return array (  '_controller' => 'dv\\SSW2014Bundle\\Controller\\EntityController::createAction',  '_route' => 'entity_create',);
+            }
+            not_entity_create:
+
+            // entity_edit
+            if (preg_match('#^/entity/(?P<id>[^/]++)/edit$#s', $pathinfo, $matches)) {
+                return $this->mergeDefaults(array_replace($matches, array('_route' => 'entity_edit')), array (  '_controller' => 'dv\\SSW2014Bundle\\Controller\\EntityController::editAction',));
+            }
+
+            // entity_update
+            if (preg_match('#^/entity/(?P<id>[^/]++)/update$#s', $pathinfo, $matches)) {
+                if (!in_array($this->context->getMethod(), array('POST', 'PUT'))) {
+                    $allow = array_merge($allow, array('POST', 'PUT'));
+                    goto not_entity_update;
+                }
+
+                return $this->mergeDefaults(array_replace($matches, array('_route' => 'entity_update')), array (  '_controller' => 'dv\\SSW2014Bundle\\Controller\\EntityController::updateAction',));
+            }
+            not_entity_update:
+
+            // entity_delete
+            if (preg_match('#^/entity/(?P<id>[^/]++)/delete$#s', $pathinfo, $matches)) {
+                if (!in_array($this->context->getMethod(), array('POST', 'DELETE'))) {
+                    $allow = array_merge($allow, array('POST', 'DELETE'));
+                    goto not_entity_delete;
+                }
+
+                return $this->mergeDefaults(array_replace($matches, array('_route' => 'entity_delete')), array (  '_controller' => 'dv\\SSW2014Bundle\\Controller\\EntityController::deleteAction',));
+            }
+            not_entity_delete:
+
+            if (0 === strpos($pathinfo, '/entity_category')) {
+                // entity_category
+                if (rtrim($pathinfo, '/') === '/entity_category') {
+                    if (substr($pathinfo, -1) !== '/') {
+                        return $this->redirect($pathinfo.'/', 'entity_category');
+                    }
+
+                    return array (  '_controller' => 'dv\\SSW2014Bundle\\Controller\\EntityCategoryController::indexAction',  '_route' => 'entity_category',);
+                }
+
+                // entity_category_show
+                if (preg_match('#^/entity_category/(?P<id>[^/]++)/show$#s', $pathinfo, $matches)) {
+                    return $this->mergeDefaults(array_replace($matches, array('_route' => 'entity_category_show')), array (  '_controller' => 'dv\\SSW2014Bundle\\Controller\\EntityCategoryController::showAction',));
+                }
+
+                // entity_category_new
+                if ($pathinfo === '/entity_category/new') {
+                    return array (  '_controller' => 'dv\\SSW2014Bundle\\Controller\\EntityCategoryController::newAction',  '_route' => 'entity_category_new',);
+                }
+
+                // entity_category_create
+                if ($pathinfo === '/entity_category/create') {
+                    if ($this->context->getMethod() != 'POST') {
+                        $allow[] = 'POST';
+                        goto not_entity_category_create;
+                    }
+
+                    return array (  '_controller' => 'dv\\SSW2014Bundle\\Controller\\EntityCategoryController::createAction',  '_route' => 'entity_category_create',);
+                }
+                not_entity_category_create:
+
+                // entity_category_edit
+                if (preg_match('#^/entity_category/(?P<id>[^/]++)/edit$#s', $pathinfo, $matches)) {
+                    return $this->mergeDefaults(array_replace($matches, array('_route' => 'entity_category_edit')), array (  '_controller' => 'dv\\SSW2014Bundle\\Controller\\EntityCategoryController::editAction',));
+                }
+
+                // entity_category_update
+                if (preg_match('#^/entity_category/(?P<id>[^/]++)/update$#s', $pathinfo, $matches)) {
+                    if (!in_array($this->context->getMethod(), array('POST', 'PUT'))) {
+                        $allow = array_merge($allow, array('POST', 'PUT'));
+                        goto not_entity_category_update;
+                    }
+
+                    return $this->mergeDefaults(array_replace($matches, array('_route' => 'entity_category_update')), array (  '_controller' => 'dv\\SSW2014Bundle\\Controller\\EntityCategoryController::updateAction',));
+                }
+                not_entity_category_update:
+
+                // entity_category_delete
+                if (preg_match('#^/entity_category/(?P<id>[^/]++)/delete$#s', $pathinfo, $matches)) {
+                    if (!in_array($this->context->getMethod(), array('POST', 'DELETE'))) {
+                        $allow = array_merge($allow, array('POST', 'DELETE'));
+                        goto not_entity_category_delete;
+                    }
+
+                    return $this->mergeDefaults(array_replace($matches, array('_route' => 'entity_category_delete')), array (  '_controller' => 'dv\\SSW2014Bundle\\Controller\\EntityCategoryController::deleteAction',));
+                }
+                not_entity_category_delete:
+
+            }
+
+        }
+
         if (0 === strpos($pathinfo, '/query')) {
             // query
             if (rtrim($pathinfo, '/') === '/query') {
@@ -202,66 +382,6 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
                 return $this->mergeDefaults(array_replace($matches, array('_route' => 'query_delete')), array (  '_controller' => 'dv\\SSW2014Bundle\\Controller\\QueryController::deleteAction',));
             }
             not_query_delete:
-
-        }
-
-        if (0 === strpos($pathinfo, '/topic')) {
-            // topic
-            if (rtrim($pathinfo, '/') === '/topic') {
-                if (substr($pathinfo, -1) !== '/') {
-                    return $this->redirect($pathinfo.'/', 'topic');
-                }
-
-                return array (  '_controller' => 'dv\\SSW2014Bundle\\Controller\\TopicController::indexAction',  '_route' => 'topic',);
-            }
-
-            // topic_show
-            if (preg_match('#^/topic/(?P<id>[^/]++)/show$#s', $pathinfo, $matches)) {
-                return $this->mergeDefaults(array_replace($matches, array('_route' => 'topic_show')), array (  '_controller' => 'dv\\SSW2014Bundle\\Controller\\TopicController::showAction',));
-            }
-
-            // topic_new
-            if ($pathinfo === '/topic/new') {
-                return array (  '_controller' => 'dv\\SSW2014Bundle\\Controller\\TopicController::newAction',  '_route' => 'topic_new',);
-            }
-
-            // topic_create
-            if ($pathinfo === '/topic/create') {
-                if ($this->context->getMethod() != 'POST') {
-                    $allow[] = 'POST';
-                    goto not_topic_create;
-                }
-
-                return array (  '_controller' => 'dv\\SSW2014Bundle\\Controller\\TopicController::createAction',  '_route' => 'topic_create',);
-            }
-            not_topic_create:
-
-            // topic_edit
-            if (preg_match('#^/topic/(?P<id>[^/]++)/edit$#s', $pathinfo, $matches)) {
-                return $this->mergeDefaults(array_replace($matches, array('_route' => 'topic_edit')), array (  '_controller' => 'dv\\SSW2014Bundle\\Controller\\TopicController::editAction',));
-            }
-
-            // topic_update
-            if (preg_match('#^/topic/(?P<id>[^/]++)/update$#s', $pathinfo, $matches)) {
-                if (!in_array($this->context->getMethod(), array('POST', 'PUT'))) {
-                    $allow = array_merge($allow, array('POST', 'PUT'));
-                    goto not_topic_update;
-                }
-
-                return $this->mergeDefaults(array_replace($matches, array('_route' => 'topic_update')), array (  '_controller' => 'dv\\SSW2014Bundle\\Controller\\TopicController::updateAction',));
-            }
-            not_topic_update:
-
-            // topic_delete
-            if (preg_match('#^/topic/(?P<id>[^/]++)/delete$#s', $pathinfo, $matches)) {
-                if (!in_array($this->context->getMethod(), array('POST', 'DELETE'))) {
-                    $allow = array_merge($allow, array('POST', 'DELETE'));
-                    goto not_topic_delete;
-                }
-
-                return $this->mergeDefaults(array_replace($matches, array('_route' => 'topic_delete')), array (  '_controller' => 'dv\\SSW2014Bundle\\Controller\\TopicController::deleteAction',));
-            }
-            not_topic_delete:
 
         }
 

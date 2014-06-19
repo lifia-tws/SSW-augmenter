@@ -189,4 +189,60 @@ class Query
     {
         // Add your code here
     }
+    /**
+     * @var string
+     */
+    private $slug;
+
+    /**
+     * @var string
+     */
+    private $template;
+
+
+    /**
+     * Set slug
+     *
+     * @param string $slug
+     * @return Query
+     */
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    /**
+     * Get slug
+     *
+     * @return string 
+     */
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
+    /**
+     * Set template
+     *
+     * @param string $template
+     * @return Query
+     */
+    public function setTemplate($template)
+    {
+        $this->template = $template;
+
+        return $this;
+    }
+
+    /**
+     * Get template
+     *
+     * @return string 
+     */
+    public function getTemplate()
+    {
+        return $this->template;
+    }
 }

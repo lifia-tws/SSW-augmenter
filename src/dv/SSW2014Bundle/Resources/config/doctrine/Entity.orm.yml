@@ -1,0 +1,35 @@
+dv\SSW2014Bundle\Entity\Entity:
+  type: entity
+  table: entity
+  id:
+    id:
+      type: integer
+      generator: { strategy: AUTO }
+  fields:
+    resource:
+      type: string
+      length: 255
+      unique: true
+    article:
+      type: string
+      length: 255
+      unique: true
+    created_at:
+      type: datetime
+    updated_at:
+      type: datetime
+      nullable: true  
+  manyToOne:
+    type:
+      targetEntity: Type
+      inversedBy: entities
+      joinColumn:
+        name: type_id
+        referencedColumnName: id
+  oneToMany:
+    entity_categories:
+      targetEntity: EntityCategory
+      mappedBy: entity
+  lifecycleCallbacks:
+    prePersist: [ setCreatedAtValue ]
+    preUpdate: [ setUpdatedAtValue ]

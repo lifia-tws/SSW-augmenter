@@ -1,0 +1,30 @@
+entity:
+    pattern:  /
+    defaults: { _controller: "dvSSW2014Bundle:Entity:index" }
+
+entity_show:
+    pattern:  /{id}/show
+    defaults: { _controller: "dvSSW2014Bundle:Entity:show" }
+
+entity_new:
+    pattern:  /new
+    defaults: { _controller: "dvSSW2014Bundle:Entity:new" }
+
+entity_create:
+    pattern:  /create
+    defaults: { _controller: "dvSSW2014Bundle:Entity:create" }
+    requirements: { _method: post }
+
+entity_edit:
+    pattern:  /{id}/edit
+    defaults: { _controller: "dvSSW2014Bundle:Entity:edit" }
+
+entity_update:
+    pattern:  /{id}/update
+    defaults: { _controller: "dvSSW2014Bundle:Entity:update" }
+    requirements: { _method: post|put }
+
+entity_delete:
+    pattern:  /{id}/delete
+    defaults: { _controller: "dvSSW2014Bundle:Entity:delete" }
+    requirements: { _method: post|delete }

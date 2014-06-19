@@ -1,10 +1,18 @@
+dv_ssw2014_category:
+    resource: "@dvSSW2014Bundle/Resources/config/routing/category.yml"
+    prefix: /category
+
+dv_ssw2014_entity:
+    resource: "@dvSSW2014Bundle/Resources/config/routing/entity.yml"
+    prefix: /entity
+
+dv_ssw2014_entitycategory:
+    resource: "@dvSSW2014Bundle/Resources/config/routing/entitycategory.yml"
+    prefix: /entity_category
+
 dv_ssw2014_query:
     resource: "@dvSSW2014Bundle/Resources/config/routing/query.yml"
     prefix: /query
-
-dvSSW2014Bundle_topic:
-    resource: "@dvSSW2014Bundle/Resources/config/routing/topic.yml"
-    prefix:   /topic
 
 dv_ssw2014_homepage:
     pattern:  /hello/{name}
