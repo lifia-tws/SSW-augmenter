@@ -13,10 +13,9 @@ class Query
     public function toJSON()
     {
         return array(
-            'id' => $this->getId(),
             'name' => $this->getName(),
-            'label' => $this->getLabel(),
-            'query' => $this->getQuery()
+            'slug' => $this->getslug(),
+            'template' => $this->getTemplate()
         );
     }
 

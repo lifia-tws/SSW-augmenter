@@ -207,6 +207,17 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
         }
 
         if (0 === strpos($pathinfo, '/entity')) {
+            // entity_queries
+            if ($pathinfo === '/entity/queries') {
+                if (!in_array($this->context->getMethod(), array('GET', 'HEAD'))) {
+                    $allow = array_merge($allow, array('GET', 'HEAD'));
+                    goto not_entity_queries;
+                }
+
+                return array (  '_controller' => 'dv\\SSW2014Bundle\\Controller\\EntityController::queriesAction',  '_route' => 'entity_queries',);
+            }
+            not_entity_queries:
+
             // entity_suggest_category
             if ($pathinfo === '/entity/suggestCategory') {
                 if ($this->context->getMethod() != 'POST') {

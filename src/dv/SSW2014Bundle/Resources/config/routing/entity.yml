@@ -1,3 +1,8 @@
+entity_queries:
+    pattern:  /queries
+    defaults: { _controller: "dvSSW2014Bundle:Entity:queries" }
+    requirements: { _method: get }
+
 entity_suggest_category:
     pattern:  /suggestCategory
     defaults: { _controller: "dvSSW2014Bundle:Entity:suggestCategory" }

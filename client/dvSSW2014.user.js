@@ -8,9 +8,8 @@
 // @grant none
 // ==/UserScript==
 
-var queries = new Array();
-
 var wpEditForm;
+var entityArticle = jQuery(location).attr('href');
 
 jQuery.get(
     jQuery('#ca-edit').find('a').attr('href'),
@@ -25,42 +24,19 @@ jQuery.get(
     }
 );
 
-function buildQuery(query, offset)
-{
-    return query.replace('%%offset%%', offset);
+function buildQuery(template, values)
+{    
+    jQuery.each(values, function(index, value)
+               {
+                   template = template.replace(String(index), value);
+               });
+    
+    return template.replace('$isPrimaryTopicOf', entityArticle);
 }
 
-function loadQueries()
-{
-    var querySelect = jQuery('#ssw-augmenter-query-select');
-    
-    queries['peopleSameAgeSameCountry'] = 'select distinct ?name, ?isPrimaryTopicOf { \
-                            ?subject foaf:isPrimaryTopicOf <' + jQuery(document).attr('location') + '> . \
-                            ?subject dbpedia-owl:birthYear ?birthYear . \
-                            ?subject dbpedia-owl:birthPlace ?birthPlace . \
-                            ?birthPlace a dbpedia-owl:Country . \
-                            ?relatedSubject a dbpedia-owl:Person . \
-                            ?relatedSubject dbpedia-owl:birthYear ?birthYear . \
-                            ?relatedSubject dbpedia-owl:birthPlace ?birthPlace . \
-                            ?relatedSubject foaf:name ?name . \
-                            ?relatedSubject foaf:isPrimaryTopicOf ?isPrimaryTopicOf } \
-                         order by ?name limit 10 offset %%offset%%';
-    
-    queries['citiesInThisCountry'] = 'select distinct ?name, ?isPrimaryTopicOf { \
-                            ?subject foaf:isPrimaryTopicOf <' + jQuery(document).attr('location') + '> . \
-                            ?relatedSubject dbpedia-owl:country ?subject . \
-                            ?relatedSubject a dbpedia-owl:City . \
-                            ?relatedSubject foaf:name ?name . \
-                            ?relatedSubject foaf:isPrimaryTopicOf ?isPrimaryTopicOf } \
-                         order by ?name limit 10 offset %%offset%%';
-    
-    queries['semanticPropertiesAsSubject'] = 'select distinct ?property { \
-                            ?subject foaf:isPrimaryTopicOf <' + jQuery(document).attr('location') + '> . \
-                            ?resource a ?subject . \
-                            ?resource ?property ?object } \
-                         order by ?property limit 10 offset %%offset%%';
-    
     // Check if subject is a Person
+    
+    /*
     
     jQuery.getJSON(
         'http://dbpedia.org/sparql',
@@ -100,23 +76,21 @@ function loadQueries()
         }
     );    
     
-    jQuery('<option value="semanticPropertiesAsSubject">Semantic properties as subject</option>').appendTo(querySelect);    
-    jQuery('<option value="semanticPropertiesAsObject">Semantic properties as object</option>').appendTo(querySelect);    
-}
+    */ 
 
 function executeQuery(query, resultContainer)
 {
-    jQuery.getJSON(
+    jQuery.get(
         'http://dbpedia.org/sparql',
         {
             'default-graph-uri': 'http://dbpedia.org',
-            'query': buildQuery(queries[query], resultContainer.attr('data-offset')),
+            'query': query,
             'format': 'application/sparql-results+json',
             'timeout': 30000,
             'debug': 'on'
         },
         function(json)
-        {                        
+        {                
             resultContainer.empty();
             
             if (json.results.bindings.length == 0)
@@ -131,80 +105,74 @@ function executeQuery(query, resultContainer)
                 });
                 
                 jQuery('<a class="ssw-augmenter-query-previous" href="#">Previous</a>')
-                   .button()
+                   .button({ icons: { primary: "ui-icon-carat-1-w" }, text: false })
                    .click(function(event)
                     {
                         event.preventDefault();
 
-                        offset = Number(resultContainer.attr('data-offset'));
+                        query = resultContainer.prev().attr('data-query');
+                        offset = Number(resultContainer.attr('data-offset')) - 10;
+                        
+                        if (offset < 0) return false;                            
 
-                        if (offset == 0)
-                        {
-                            return false;
-                        }
+                        resultContainer.attr('data-offset', offset);
 
-                        resultContainer.attr('data-offset', Number(resultContainer.attr('data-offset')) - 10);
+                        query = buildQuery(query, { '$offset': offset });
 
                         executeQuery(query, resultContainer);
                    })
                    .appendTo(resultContainer);
                 
-                next = jQuery('<a class="ssw-augmenter-query-previous" href="#">Next</a>').appendTo(resultContainer);
-                next.button();
-                
-                next.on('click', function(event)
-                {
-                    event.preventDefault();
-                    
-                    resultContainer.find('.ssw-augmenter-query-previous').attr('disabled', true);
-                    
-                    resultContainer.attr('data-offset', Number(resultContainer.attr('data-offset')) + 10);
-                    
-                    executeQuery(query, resultContainer);
-                });
-                
-                next.appendTo(resultContainer);
+                jQuery('<a class="ssw-augmenter-query-next" href="#">Next</a>')
+                   .button({ icons: { primary: "ui-icon-carat-1-e" }, text: false })
+                   .click(function(event)
+                    {
+                        event.preventDefault();
+
+                        query = resultContainer.prev().attr('data-query');
+                        offset = Number(resultContainer.attr('data-offset')) + 10;
+
+                        resultContainer.attr('data-offset', offset);
+
+                        query = buildQuery(query, { '$offset': offset });
+
+                        executeQuery(query, resultContainer);
+                   })
+                   .appendTo(resultContainer);
             }            
         }
     );
 }
 
-function Query(name, label, query)
+function sswQuery(id, label, template)
 {
-    this.query = query;
+    this.id = id;
     this.label = label;
+    this.template = template;
     
-    this.trigger = '<span class="ssw-augmenter-query" data-query="' + this.query + '">' + this.label + '</span>';
-    this.results = '<div class="ssw-augmenter-query-results" data-offset="0"></div>';
-    
-    this.render = function() { return this.trigger + this.results; };
-    
-    this.appendTo = function(target) { jQuery(this.render()).appendTo(target); };
+    this.build = function() { return jQuery('<span class="ssw-augmenter-query" data-query="' + this.template + '">' + this.label + '</span><div class="ssw-augmenter-query-results" data-offset="0"></div>'); }
 }
 
-function QueryContainer()
+function sswQueriesWidget()
 {
+    this.title = 'SSW Augmenter Queries';
+    
     this.queries = new Array();
     
     this.add = function(query) { this.queries.push(query); };
     
-    this.render = function()
-    {
-        infoboxTableRow = jQuery('<tr id="ssw-augmenter-tr"></tr>');
-        infoboxTableData = jQuery('<td class="ssw-max-colspan"><span id="ssw-augmenter-queries-title">SSW Augmenter Queries</span></td>');
+    this.build = function()
+    {        
         queryContainer = jQuery('<div></div>');
     
         jQuery.each(this.queries, function(index, query)
-        {    
-            
+        {                
             jQuery(query.results).on('click', function(event)
             {
-//                trigger = jQuery(event.target);
-//                results = trigger.next();
 
             });
             
-            query.appendTo(queryContainer);
+            query.build().appendTo(queryContainer);
         });
         
         queryContainer.accordion(
@@ -214,13 +182,25 @@ function QueryContainer()
             heightStyle: 'content'
         });
         
-        queryContainer.appendTo(infoboxTableData);
-        infoboxTableData.appendTo(infoboxTableRow);
+        queryContainer.find('span.ssw-augmenter-query')
+        .click(function()
+               {
+                   if (jQuery(this).hasClass('ui-accordion-header-active'))
+                   {                                           
+                       query = buildQuery(jQuery(this).attr('data-query'), { '$offset': jQuery(this).next().attr('data-offset') });
+                       resultContainer = jQuery(this).next();
+                       
+                       executeQuery(query, resultContainer);
+                   }
+               });
         
-        return infoboxTableRow;
-    }
+        return queryContainer;
+    }    
     
-    this.appendTo = function(target) { jQuery(this.render()).appendTo(target); };
+    this.render = function()
+    {
+        (new sswInfoboxWidget(this)).render();        
+    }
 }
 
 function sswSuggestedCategory(id, label)
@@ -232,7 +212,7 @@ function sswSuggestedCategory(id, label)
     {     
         suggestedCategoryContainer = jQuery('<li class="ssw-augmenter-suggested-category"></li>');
         suggestedCategoryCheckbox = jQuery('<input type="checkbox" value="' + this.label + '">' + this.label + '</input>');
-        suggestedCategoryLikeButton = jQuery('<a href="#">Me gusta</a>');        
+        suggestedCategoryLikeButton = jQuery('<a href="#">Like</a>');        
         
         jQuery(suggestedCategoryCheckbox)
            .change(function(event)
@@ -250,7 +230,7 @@ function sswSuggestedCategory(id, label)
                   });
         
         jQuery(suggestedCategoryLikeButton)
-           .button()
+           .button({ icons: { primary: "ui-icon-star" }, text: false })
            .click(function(event)
                   {
                       event.preventDefault();
@@ -443,7 +423,7 @@ function sswSuggestedCategoriesWidget()
 }
 
 jQuery(document).ready(function()
-{    
+{            
     // Adding jQuery UI CSS
     jQuery('<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/ui-lightness/jquery-ui.css" />').appendTo(jQuery('head')); 
     
@@ -461,8 +441,12 @@ jQuery(document).ready(function()
     
     jQuery(sswAugmenterStyle).appendTo(jQuery('head'));
     
+    loadSuggestedCategories();
+    loadQueries();    
     
     // Adding more CSS - END
+    
+    /*
         
     jQuery.getJSON(
        '//localhost/app_dev.php/query/all.json',
@@ -486,9 +470,71 @@ jQuery(document).ready(function()
             }
         }
     );
-        
-    suggestedCategories = new sswSuggestedCategoriesWidget();
     
+    */    
+    
+    // Add category to wiki source - BEGIN
+    
+    if (jQuery('#ca-edit').length > 0)
+    {
+        editLink = jQuery('#ca-edit').find('a').attr('href');
+        
+        jQuery.get(editLink, function(data)
+        {
+        });
+    }
+    
+    // Add category to wiki source - END
+    
+    jQuery('.selectable').selectable();
+    
+    // Agregar categorías sugeridas - END
+    
+    /*
+    
+    jQuery('.ssw-augmenter-query').on('click', function(event)
+    {
+        currentTarget = jQuery(event.currentTarget);
+        
+        if (isClosed(currentTarget))
+        {
+            executeQuery(currentTarget.attr('data-query'), jQuery('#' + currentTarget.attr('id') + '-results'));
+        }
+    });
+    
+    */
+});
+
+function loadQueries()
+{ 
+    queries = new sswQueriesWidget();
+    
+    jQuery.get('//localhost/app_dev.php/entity/queries', { entityArticle: entityArticle })
+    .done(function(response)
+         {
+             if (response.status == 'success')
+             {
+                 jQuery.each(response.data.queries, function(index, value)
+                 {
+                     queries.add(new sswQuery(value.slug, value.name, value.template));
+                 });                 
+             }
+             else
+             {
+                 alert(response.data.message);
+             }
+             
+             queries.render();
+         })
+    .fail(function()
+          {              
+              alert('Connection error!');
+          });
+}
+
+function loadSuggestedCategories()
+{    
+    suggestedCategories = new sswSuggestedCategoriesWidget();    
     
     jQuery.get('//localhost/app_dev.php/entity/categories', { entityArticle: jQuery(location).attr('href') })
     .done(function(response)
@@ -510,39 +556,8 @@ jQuery(document).ready(function()
     .fail(function()
           {
               alert('Connection error!');
-          });
-    
-    loadQueries();    
-    
-    
-    // Add category to wiki sour)ce - BEGIN
-    
-    if (jQuery('#ca-edit').length > 0)
-    {
-        editLink = jQuery('#ca-edit').find('a').attr('href');
-        
-        jQuery.get(editLink, function(data)
-        {
-            //console.log(jQuery(data).find('#wpTextbox1').text());
-        });
-    }
-    
-    // Add category to wiki source - END
-    
-    jQuery('.selectable').selectable();
-    
-    // Agregar categorías sugeridas - END
-    
-    jQuery('.ssw-augmenter-query').on('click', function(event)
-    {
-        currentTarget = jQuery(event.currentTarget);
-        
-        if (isClosed(currentTarget))
-        {
-            executeQuery(currentTarget.attr('data-query'), jQuery('#' + currentTarget.attr('id') + '-results'));
-        }
-    });
-});
+          });    
+}
 
 function isClosed(section)
 {

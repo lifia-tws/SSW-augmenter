@@ -20,6 +20,33 @@ use Doctrine\Common\Util\Inflector;
  */
 class EntityController extends Controller
 {
+  public function queriesAction(Request $request)
+  {
+    $em = $this->getDoctrine()->getManager();
+
+    $entityArticle = $request->get('entityArticle');
+
+    if (!$entityArticle)
+    {
+      return new JsonResponse(array(
+        'status' => 'fail',
+        'data' => array('message' => 'Not enough arguments.')
+      ));    
+    }
+
+    $queries = array();
+
+    foreach ($em->getRepository('dvSSW2014Bundle:Query')->findAll() as $query)
+    {
+      $queries[] = $query->toJSON();
+    }
+
+    return new JsonResponse(array(
+      'status' => 'success',
+      'data' => array('queries' => $queries)
+    ));
+  }
+
   public function suggestCategoryAction(Request $request)
   {
     $em = $this->getDoctrine()->getManager();
