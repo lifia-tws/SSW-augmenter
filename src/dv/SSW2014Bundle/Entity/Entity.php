@@ -9,6 +9,11 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Entity
 {
+  public function toString()
+  {
+    return $this->getArticle();
+  }
+
     /**
      * @var integer
      */
@@ -215,6 +220,10 @@ class Entity
     public function setCreatedAtValue()
     {
         // Add your code here
+      if(!$this->getCreatedAt())
+      {
+        $this->created_at = new \DateTime();
+      }
     }
 
     /**
@@ -223,5 +232,6 @@ class Entity
     public function setUpdatedAtValue()
     {
         // Add your code here
+      $this->updated_at = new \DateTime();
     }
 }

@@ -41,10 +41,8 @@ class QueryController extends Controller
         if ($r->findOneBy(array('name' => 'peopleSameAgeSameCountry')) == null)
         {
             $peopleSameAgeSameCountry = new Query();
-            $peopleSameAgeSameCountry->setName('peopleSameAgeSameCountry');
-            $peopleSameAgeSameCountry->setLabel('People born in the same country and the same year');
-            $peopleSameAgeSameCountry->setQuery('select distinct ?name, ?isPrimaryTopicOf { ?subject foaf:isPrimaryTopicOf <%%isPrimaryTopicOf%%> . ?subject dbpedia-owl:birthYear ?birthYear . ?subject dbpedia-owl:birthPlace ?birthPlace . ?birthPlace a dbpedia-owl:Country . ?relatedSubject a dbpedia-owl:Person . ?relatedSubject dbpedia-owl:birthYear ?birthYear . ?relatedSubject dbpedia-owl:birthPlace ?birthPlace . ?relatedSubject foaf:name ?name . ?relatedSubject foaf:isPrimaryTopicOf ?isPrimaryTopicOf } order by ?name limit 10 offset %%offset%%');
-            $peopleSameAgeSameCountry->setCreatedAt(new \DateTime('today'));
+            $peopleSameAgeSameCountry->setName('People born in the same country and the same year');
+            $peopleSameAgeSameCountry->setTemplate('select distinct ?name, ?isPrimaryTopicOf { ?subject foaf:isPrimaryTopicOf <%%isPrimaryTopicOf%%> . ?subject dbpedia-owl:birthYear ?birthYear . ?subject dbpedia-owl:birthPlace ?birthPlace . ?birthPlace a dbpedia-owl:Country . ?relatedSubject a dbpedia-owl:Person . ?relatedSubject dbpedia-owl:birthYear ?birthYear . ?relatedSubject dbpedia-owl:birthPlace ?birthPlace . ?relatedSubject foaf:name ?name . ?relatedSubject foaf:isPrimaryTopicOf ?isPrimaryTopicOf } order by ?name limit 10 offset %%offset%%');
 
             $em->persist($peopleSameAgeSameCountry);
         }
@@ -53,10 +51,8 @@ class QueryController extends Controller
         if ($r->findOneBy(array('name' => 'citiesInThisCountry')) == null)
         {
             $citiesInThisCountry = new Query();
-            $citiesInThisCountry->setName('citiesInThisCountry');
-            $citiesInThisCountry->setLabel('Cities in this country');
-            $citiesInThisCountry->setQuery('select distinct ?name, ?isPrimaryTopicOf { ?subject foaf:isPrimaryTopicOf <%%isPrimaryTopicOf%%> . ?relatedSubject dbpedia-owl:country ?subject . ?relatedSubject a dbpedia-owl:City . ?relatedSubject foaf:name ?name . ?relatedSubject foaf:isPrimaryTopicOf ?isPrimaryTopicOf } order by ?name limit 10 offset %%offset%%');
-            $citiesInThisCountry->setCreatedAt(new \DateTime('today'));
+            $citiesInThisCountry->setName('Cities in this country');
+            $citiesInThisCountry->setTemplate('select distinct ?name, ?isPrimaryTopicOf { ?subject foaf:isPrimaryTopicOf <%%isPrimaryTopicOf%%> . ?relatedSubject dbpedia-owl:country ?subject . ?relatedSubject a dbpedia-owl:City . ?relatedSubject foaf:name ?name . ?relatedSubject foaf:isPrimaryTopicOf ?isPrimaryTopicOf } order by ?name limit 10 offset %%offset%%');
 
             $em->persist($citiesInThisCountry);
         }
@@ -65,10 +61,8 @@ class QueryController extends Controller
         if ($r->findOneBy(array('name' => 'semanticPropertiesAsSubject')) == null)
         {
             $semanticPropertiesAsSubject = new Query();
-            $semanticPropertiesAsSubject->setName('semanticPropertiesAsSubject');
-            $semanticPropertiesAsSubject->setLabel('Semantic properties as subject');
-            $semanticPropertiesAsSubject->setQuery('select distinct ?property { ?subject foaf:isPrimaryTopicOf <%%isPrimaryTopicOf%%> . ?resource a ?subject . ?resource ?property ?object } order by ?property limit 10 offset %%offset%%');
-            $semanticPropertiesAsSubject->setCreatedAt(new \DateTime('today'));
+            $semanticPropertiesAsSubject->setName('Semantic properties as subject');
+            $semanticPropertiesAsSubject->setTemplate('select distinct ?property { ?subject foaf:isPrimaryTopicOf <%%isPrimaryTopicOf%%> . ?resource a ?subject . ?resource ?property ?object } order by ?property limit 10 offset %%offset%%');
 
             $em->persist($semanticPropertiesAsSubject);
         }
@@ -77,10 +71,8 @@ class QueryController extends Controller
         if ($r->findOneBy(array('name' => 'semanticPropertiesAsObject')) == null)
         {
             $semanticPropertiesAsObject = new Query();
-            $semanticPropertiesAsObject->setLabel('Semantic properties as object');
-            $semanticPropertiesAsObject->setName('semanticPropertiesAsObject');
-            $semanticPropertiesAsObject->setQuery('select distinct ?property { ?subject foaf:isPrimaryTopicOf <%%isPrimaryTopicOf%%> . ?resource a ?subject . ?resource ?property ?object } order by ?property limit 10 offset %%offset%%');
-            $semanticPropertiesAsObject->setCreatedAt(new \DateTime('today'));
+            $semanticPropertiesAsObject->setName('Semantic properties as object');
+            $semanticPropertiesAsObject->setTemplate('select distinct ?property { ?subject foaf:isPrimaryTopicOf <%%isPrimaryTopicOf%%> . ?resource a ?subject . ?resource ?property ?object } order by ?property limit 10 offset %%offset%%');
 
             $em->persist($semanticPropertiesAsObject);
         }

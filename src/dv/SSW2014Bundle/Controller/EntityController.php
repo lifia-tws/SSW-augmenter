@@ -3,10 +3,16 @@
 namespace dv\SSW2014Bundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use dv\SSW2014Bundle\Entity\Entity;
+use dv\SSW2014Bundle\Entity\Category;
+use dv\SSW2014Bundle\Entity\EntityCategory;
+
 use dv\SSW2014Bundle\Form\EntityType;
+
+use Doctrine\Common\Util\Inflector;
 
 /**
  * Entity controller.
@@ -14,6 +20,114 @@ use dv\SSW2014Bundle\Form\EntityType;
  */
 class EntityController extends Controller
 {
+  public function suggestCategoryAction(Request $request)
+  {
+    $em = $this->getDoctrine()->getManager();
+
+    $entityArticle = $request->get('entityArticle');
+    $categoryName = $request->get('categoryName');
+
+    if (!$entityArticle || !$categoryName)
+    {
+      return new JsonResponse(array(
+        'status' => 'fail',
+        'data' => array('message' => 'Not enough arguments.')
+      ));    
+    }
+
+    $entity = $em->getRepository('dvSSW2014Bundle:Entity')->findOneBy(array('article' => $entityArticle));
+
+    if (!$entity)
+    {
+      $entity = new Entity();
+      $entity->setResource(Inflector::camelize($entityArticle));
+      $entity->setArticle($entityArticle);  
+
+      $em->persist($entity); 
+    }
+  
+    $category = $em->getRepository('dvSSW2014Bundle:Category')->findOneBy(array('name' => $categoryName));
+
+    if (!$category)
+    {
+      $category = new Category();
+      $category->setName($categoryName);   
+
+      $em->persist($category);   
+    }
+
+    $em->flush();     
+
+    if ($entity_category = $em->getRepository('dvSSW2014Bundle:EntityCategory')->findOneBy(array('entity' => $entity, 'category' => $category)))
+    {
+      return new JsonResponse(array(
+        'status' => 'fail',
+        'data' => array('message' => 'Category already exists.')
+      ));    
+    }
+    else
+    {
+      $entity_category = new EntityCategory();
+      $entity_category->setEntity($entity);
+      $entity_category->setCategory($category);
+      $entity_category->setRating(1);
+    }
+
+    $em->persist($entity_category);
+
+    $em->flush();     
+
+    return new JsonResponse(array(
+      'status' => 'success',
+      'data' => array('category' => $category->toJSON())
+    ));    
+  }
+
+  public function categoriesAction(Request $request)
+  {
+    $em = $this->getDoctrine()->getManager();
+
+    $entityArticle = $request->get('entityArticle');
+
+    if (!$entityArticle)
+    {
+      return new JsonResponse(array(
+        'status' => 'fail',
+        'data' => array('message' => 'Not enough arguments.')
+      ));    
+    }
+
+    $entity = $em->getRepository('dvSSW2014Bundle:Entity')->findOneBy(array('article' => $entityArticle));
+
+    if (!$entity)
+    {
+      $entity = new Entity();
+      $entity->setResource('test');
+      $entity->setArticle($entityArticle);  
+
+      $em->persist($entity);
+    }
+
+    $categories = array();
+
+    foreach ($entity->getEntityCategories() as $entity_category)
+    {
+      $categories[] = $entity_category->getCategory()->toJSON();
+    }
+
+    if (count($categories) == 0)
+    {
+      return new JsonResponse(array(
+        'status' => 'fail',
+        'data' => array('message' => 'No categories available.')
+      ));    
+    }
+
+    return new JsonResponse(array(
+      'status' => 'success',
+      'data' => array('categories' => $categories)
+    ));
+  }
 
     /**
      * Lists all Entity entities.

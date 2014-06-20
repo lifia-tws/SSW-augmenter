@@ -136,6 +136,17 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
         }
 
         if (0 === strpos($pathinfo, '/category')) {
+            // category_like
+            if ($pathinfo === '/category/like') {
+                if ($this->context->getMethod() != 'POST') {
+                    $allow[] = 'POST';
+                    goto not_category_like;
+                }
+
+                return array (  '_controller' => 'dv\\SSW2014Bundle\\Controller\\CategoryController::likeAction',  '_route' => 'category_like',);
+            }
+            not_category_like:
+
             // category
             if (rtrim($pathinfo, '/') === '/category') {
                 if (substr($pathinfo, -1) !== '/') {
@@ -196,6 +207,28 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
         }
 
         if (0 === strpos($pathinfo, '/entity')) {
+            // entity_suggest_category
+            if ($pathinfo === '/entity/suggestCategory') {
+                if ($this->context->getMethod() != 'POST') {
+                    $allow[] = 'POST';
+                    goto not_entity_suggest_category;
+                }
+
+                return array (  '_controller' => 'dv\\SSW2014Bundle\\Controller\\EntityController::suggestCategoryAction',  '_route' => 'entity_suggest_category',);
+            }
+            not_entity_suggest_category:
+
+            // entity_categories
+            if ($pathinfo === '/entity/categories') {
+                if (!in_array($this->context->getMethod(), array('GET', 'HEAD'))) {
+                    $allow = array_merge($allow, array('GET', 'HEAD'));
+                    goto not_entity_categories;
+                }
+
+                return array (  '_controller' => 'dv\\SSW2014Bundle\\Controller\\EntityController::categoriesAction',  '_route' => 'entity_categories',);
+            }
+            not_entity_categories:
+
             // entity
             if (rtrim($pathinfo, '/') === '/entity') {
                 if (substr($pathinfo, -1) !== '/') {

@@ -1,8 +1,11 @@
 1) Add a new virtual host
 
-<VirtualHost *:80>
+ServerName localhost
 
+<VirtualHost *:80>
     Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Allow-Headers "origin, x-requested-with, content-type"
+    Header set Access-Control-Allow-Methods "PUT, GET, POST, DELETE, OPTIONS"
 
     DocumentRoot /var/www/ssw2014/web
     DirectoryIndex app.php

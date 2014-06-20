@@ -22,5 +22,5 @@ dv\SSW2014Bundle\Entity\Query:
       type: datetime
       nullable: true
   lifecycleCallbacks:
-    prePersist: [ setCreatedAtValue ]
-    preUpdate: [ setUpdatedAtValue ]
+    prePersist: [ prePersistTask ]
+    preUpdate: [ preUpdateTask ]

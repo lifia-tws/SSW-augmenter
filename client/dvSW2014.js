@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name dvSSW2014
+// @name dvSSW2014v2
 // @namespace dv
 // @include http://joanpiedra.com/jquery/greasemonkey/
 // @require http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js
@@ -232,7 +232,7 @@ function sswSuggestedCategory(id, label)
     {     
         suggestedCategoryContainer = jQuery('<li class="ssw-augmenter-suggested-category"></li>');
         suggestedCategoryCheckbox = jQuery('<input type="checkbox" value="' + this.label + '">' + this.label + '</input>');
-        suggestedCategoryLikeButton = jQuery('<img src="//localhost/bundles/dvssw2014/images/star-color.png" width="24px" height="24px"></img>');
+        suggestedCategoryLikeButton = jQuery('<a href="#">Me gusta</a>');        
         
         jQuery(suggestedCategoryCheckbox)
            .change(function(event)
@@ -241,7 +241,6 @@ function sswSuggestedCategory(id, label)
                       
                       if (suggestedCategoryCheckbox.is(':checked'))
                       {
-                          console.log(suggestedCategoryCheckbox.parent());
                          jQuery(suggestedCategoryCheckbox.parent()).addClass('ssw-augmenter-suggested-category-selected');
                       }
                       else
@@ -251,10 +250,31 @@ function sswSuggestedCategory(id, label)
                   });
         
         jQuery(suggestedCategoryLikeButton)
-           //.button()
-           .click(function()
+           .button()
+           .click(function(event)
                   {
-                      alert(123);
+                      event.preventDefault();
+                      
+                      button = jQuery(event.currentTarget);
+                      
+                      jQuery.post('//localhost/app_dev.php/category/like', { entityArticle: jQuery(location).attr('href'), categoryName: jQuery(event.currentTarget).prev().val() })
+                      .done(function(response)
+                           {
+                               if (response.status == 'success')
+                               {                           
+                                  button.button("disable");
+                                   
+                                  alert('Like submmited!');       
+                               }                        
+                               else
+                               {
+                                  alert(response.data.message);
+                               }
+                           })
+                      .fail(function()
+                           {
+                              alert('Connection error!') ;
+                           });
                   });
         
         jQuery(suggestedCategoryCheckbox).appendTo(suggestedCategoryContainer);
@@ -296,7 +316,7 @@ function sswSuggestedCategoriesWidget()
     
     this.build = function()
     {
-        suggestedCategoriesContainer = jQuery('<div></div>');
+        suggestedCategoriesContainer = jQuery('<div class="ssw-augmenter-widget"></div>');
         suggestedCategoriesList = jQuery('<ul class="ssw-augmenter-suggested-categories-widget"></ul>');
         
         for (i = 0; i < this.suggestedCategories.length; i++)
@@ -358,9 +378,60 @@ function sswSuggestedCategoriesWidget()
                       }
                   });        
         
+        suggestedCategoryFormNameInput = jQuery('<input type="text"></input>');
+        suggestedCategoryFormSubmitButton = jQuery('<a href="#">Submit</a>');
+        
+        suggestedCategoryFormSubmitButton
+           .button({ icons: { primary: "ui-icon-plus" }, text: false })
+           .click(function(event)
+                 {
+                     event.preventDefault();          
+                     
+                     suggestedCategoryName = jQuery(event.currentTarget).prev().val();
+                     
+                     if (suggestedCategoryName.length > 0)
+                     {   
+                         suggestedCategoryFormSubmitButton = jQuery(event.currentTarget);
+                         
+                         jQuery.post('//localhost/app_dev.php/entity/suggestCategory', { entityArticle: jQuery(location).attr('href'), categoryName: suggestedCategoryName })
+                         .done(function(response)
+                               {
+                                   if (response.status == 'success')
+                                   {                                       
+                                       suggestedCategoryFormSubmitButton.prev().val('');
+                                       
+                                       suggestedCategory = new sswSuggestedCategory(response.data.category.name, response.data.category.name);
+                                    
+                                       // FIXME
+                                       suggestedCategory.build().appendTo('ul.ssw-augmenter-suggested-categories-widget');
+                                   }                                   
+                                   else
+                                   {
+                                       alert(response.data.message);
+                                   }
+                               })
+                         .fail(function()
+                               {
+                                   alert('Connection error!');
+                               });
+                     }
+                     else
+                     {
+                         alert('Empty name!');
+                     }
+                 });
+        
+        suggestedCategoryFormSubmitButton.css('display', 'inline-block');
+        
         suggestedCategoriesList.appendTo(suggestedCategoriesContainer);
         suggestedCategoriesClearButton.appendTo(suggestedCategoriesContainer);
         suggestedCategoriesAddButton.appendTo(suggestedCategoriesContainer);
+        
+        suggestedCategoriesList.appendTo(suggestedCategoriesContainer);
+        suggestedCategoriesClearButton.appendTo(suggestedCategoriesContainer);
+        suggestedCategoriesAddButton.appendTo(suggestedCategoriesContainer);
+        suggestedCategoryFormNameInput.appendTo(suggestedCategoriesContainer);
+        suggestedCategoryFormSubmitButton.appendTo(suggestedCategoriesContainer);
         
         return suggestedCategoriesContainer;
     }
@@ -371,16 +442,16 @@ function sswSuggestedCategoriesWidget()
     }
 }
 
-
 jQuery(document).ready(function()
 {    
-    /* Adding jQuery UI CSS */
+    // Adding jQuery UI CSS
     jQuery('<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/ui-lightness/jquery-ui.css" />').appendTo(jQuery('head')); 
     
-    /* Adding more CSS - BEGIN */
+    // Adding more CSS - BEGIN
     
     sswAugmenterStyle = '<style>';   
     sswAugmenterStyle += '.ssw-augmenter-widget-title { font-weight: bold; }';
+    sswAugmenterStyle += '.ssw-augmenter-widget > ul { margin-left: 0; }';
     sswAugmenterStyle += '.ssw-augmenter-suggested-categories-widget { list-style: none; margin-left: 0; !important }';
     sswAugmenterStyle += '.ssw-augmenter-suggested-categories-widget:first-child { border-top: 1px solid #e5e5e5; }';   
     sswAugmenterStyle += '.ssw-augmenter-suggested-category { vertical-align: middle; border-bottom: 1px solid #e5e5e5; margin: 0; padding: 0; }';   
@@ -391,8 +462,8 @@ jQuery(document).ready(function()
     jQuery(sswAugmenterStyle).appendTo(jQuery('head'));
     
     
-    /* Adding more CSS - END */
-    
+    // Adding more CSS - END
+        
     jQuery.getJSON(
        '//localhost/app_dev.php/query/all.json',
         {},
@@ -415,19 +486,36 @@ jQuery(document).ready(function()
             }
         }
     );
-    
+        
     suggestedCategories = new sswSuggestedCategoriesWidget();
     
-    for (i = 0; i < 5; i++)
-    {
-        suggestedCategories.add(new sswSuggestedCategory(1, 'Categoría ' + i));        
-    }
     
-    suggestedCategories.render();
+    jQuery.get('//localhost/app_dev.php/entity/categories', { entityArticle: jQuery(location).attr('href') })
+    .done(function(response)
+         {
+            if (response.status == 'success')
+            {
+                jQuery.each(response.data.categories, function(index, value)
+                {
+                    suggestedCategories.add(new sswSuggestedCategory('ssw-suggested-category' + value.name, value.name));   
+                });
+            }
+            else
+            {
+                alert(response.data.message)                
+            }        
+             
+            suggestedCategories.render();
+         })
+    .fail(function()
+          {
+              alert('Connection error!');
+          });
     
     loadQueries();    
     
-    /* Add category to wiki sour)ce - BEGIN */
+    
+    // Add category to wiki sour)ce - BEGIN
     
     if (jQuery('#ca-edit').length > 0)
     {
@@ -439,11 +527,11 @@ jQuery(document).ready(function()
         });
     }
     
-    /* Add category to wiki source - END */
+    // Add category to wiki source - END
     
     jQuery('.selectable').selectable();
     
-    /* Agregar categorías sugeridas - END */    
+    // Agregar categorías sugeridas - END
     
     jQuery('.ssw-augmenter-query').on('click', function(event)
     {

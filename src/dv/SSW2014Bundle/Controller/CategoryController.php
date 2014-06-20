@@ -3,9 +3,13 @@
 namespace dv\SSW2014Bundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
+use dv\SSW2014Bundle\Entity\Entity;
 use dv\SSW2014Bundle\Entity\Category;
+use dv\SSW2014Bundle\Entity\EntityCategory;
+
 use dv\SSW2014Bundle\Form\CategoryType;
 
 /**
@@ -14,6 +18,37 @@ use dv\SSW2014Bundle\Form\CategoryType;
  */
 class CategoryController extends Controller
 {
+  public function likeAction(Request $request)
+  {
+    $em = $this->getDoctrine()->getManager();
+
+    $entityArticle = $request->get('entityArticle');  
+    $categoryName = $request->get('categoryName');  
+
+    if (!$entityArticle || !$categoryName)
+    {
+      return new JsonResponse(array(
+        'status' => 'fail',
+        'data' => array('message' => 'Not enough arguments.')
+      ));    
+    }
+
+    $entity = $em->getRepository('dvSSW2014Bundle:Entity')->findOneBy(array('article' => $entityArticle));
+  
+    $category = $em->getRepository('dvSSW2014Bundle:Category')->findOneBy(array('name' => $categoryName));
+
+    $entity_category = $em->getRepository('dvSSW2014Bundle:EntityCategory')->findOneBy(array('entity' => $entity, 'category' => $category));
+
+    $entity_category->addLike();
+
+    $em->persist($entity_category);
+    $em->flush();
+
+    return new JsonResponse(array(
+      'status' => 'success',
+      'data' => array('entity_category' => $entity_category->toJSON())
+    ));        
+  }
 
     /**
      * Lists all Category entities.

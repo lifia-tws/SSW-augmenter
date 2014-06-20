@@ -1,3 +1,13 @@
+entity_suggest_category:
+    pattern:  /suggestCategory
+    defaults: { _controller: "dvSSW2014Bundle:Entity:suggestCategory" }
+    requirements: { _method: post }
+
+entity_categories:
+    pattern:  /categories
+    defaults: { _controller: "dvSSW2014Bundle:Entity:categories" }
+    requirements: { _method: get }
+
 entity:
     pattern:  /
     defaults: { _controller: "dvSSW2014Bundle:Entity:index" }

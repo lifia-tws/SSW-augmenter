@@ -3,12 +3,27 @@
 namespace dv\SSW2014Bundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Util\Inflector as Inflector;
 
 /**
  * Category
  */
 class Category
 {
+  public function toString()
+  {
+    return $this->getName();
+  }
+
+  public function toJSON()
+  {
+    return array
+    (
+      'name' => $this->getName(),
+      'slug' => $this->getSlug()
+    );
+  }
+
     /**
      * @var integer
      */
@@ -181,19 +196,27 @@ class Category
     {
         return $this->category_entities;
     }
+
     /**
      * @ORM\PrePersist
      */
-    public function setCreatedAtValue()
+    public function prePersistTask()
     {
         // Add your code here
+      if(!$this->getCreatedAt())
+      {
+        $this->created_at = new \DateTime();
+      }
+
+      $this->setSlug(Inflector::camelize($this->getName()));
     }
 
     /**
      * @ORM\PreUpdate
      */
-    public function setUpdatedAtValue()
+    public function preUpdateTask()
     {
         // Add your code here
+      $this->updated_at = new \DateTime();
     }
 }

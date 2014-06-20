@@ -9,6 +9,21 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class EntityCategory
 {
+  public function toJSON()
+  {
+    return array
+    (
+      'entity' => $this->getEntity()->toString(),
+      'category' => $this->getCategory()->toString(),
+      'rating' => $this->getRating()
+    );
+  }
+
+  public function addLike()
+  {
+    $this->setRating($this->getRating() + 1);    
+  }
+
     /**
      * @var integer
      */

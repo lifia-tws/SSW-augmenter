@@ -35,57 +35,38 @@ class __TwigTemplate_26e55d80b338d03367f04a9dc554179caab32c06579600da774020d6238
             <tr>
                 <th>Id</th>
                 <th>Name</th>
-                <th>Slug</th>
-                <th>Created_at</th>
-                <th>Updated_at</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
         ";
-        // line 18
+        // line 15
         $context['_parent'] = (array) $context;
         $context['_seq'] = twig_ensure_traversable((isset($context["entities"]) ? $context["entities"] : $this->getContext($context, "entities")));
         foreach ($context['_seq'] as $context["_key"] => $context["entity"]) {
-            // line 19
+            // line 16
             echo "            <tr>
                 <td><a href=\"";
-            // line 20
+            // line 17
             echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("category_show", array("id" => $this->getAttribute((isset($context["entity"]) ? $context["entity"] : $this->getContext($context, "entity")), "id"))), "html", null, true);
             echo "\">";
             echo twig_escape_filter($this->env, $this->getAttribute((isset($context["entity"]) ? $context["entity"] : $this->getContext($context, "entity")), "id"), "html", null, true);
             echo "</a></td>
                 <td>";
-            // line 21
+            // line 18
             echo twig_escape_filter($this->env, $this->getAttribute((isset($context["entity"]) ? $context["entity"] : $this->getContext($context, "entity")), "name"), "html", null, true);
-            echo "</td>
-                <td>";
-            // line 22
-            echo twig_escape_filter($this->env, $this->getAttribute((isset($context["entity"]) ? $context["entity"] : $this->getContext($context, "entity")), "slug"), "html", null, true);
-            echo "</td>
-                <td>";
-            // line 23
-            if ($this->getAttribute((isset($context["entity"]) ? $context["entity"] : $this->getContext($context, "entity")), "createdat")) {
-                echo twig_escape_filter($this->env, twig_date_format_filter($this->env, $this->getAttribute((isset($context["entity"]) ? $context["entity"] : $this->getContext($context, "entity")), "createdat"), "Y-m-d H:i:s"), "html", null, true);
-            }
-            echo "</td>
-                <td>";
-            // line 24
-            if ($this->getAttribute((isset($context["entity"]) ? $context["entity"] : $this->getContext($context, "entity")), "updatedat")) {
-                echo twig_escape_filter($this->env, twig_date_format_filter($this->env, $this->getAttribute((isset($context["entity"]) ? $context["entity"] : $this->getContext($context, "entity")), "updatedat"), "Y-m-d H:i:s"), "html", null, true);
-            }
             echo "</td>
                 <td>
                 <ul>
                     <li>
                         <a href=\"";
-            // line 28
+            // line 22
             echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("category_show", array("id" => $this->getAttribute((isset($context["entity"]) ? $context["entity"] : $this->getContext($context, "entity")), "id"))), "html", null, true);
             echo "\">show</a>
                     </li>
                     <li>
                         <a href=\"";
-            // line 31
+            // line 25
             echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("category_edit", array("id" => $this->getAttribute((isset($context["entity"]) ? $context["entity"] : $this->getContext($context, "entity")), "id"))), "html", null, true);
             echo "\">edit</a>
                     </li>
@@ -97,14 +78,14 @@ class __TwigTemplate_26e55d80b338d03367f04a9dc554179caab32c06579600da774020d6238
         $_parent = $context['_parent'];
         unset($context['_seq'], $context['_iterated'], $context['_key'], $context['entity'], $context['_parent'], $context['loop']);
         $context = array_intersect_key($context, $_parent) + $_parent;
-        // line 37
+        // line 31
         echo "        </tbody>
     </table>
 
         <ul>
         <li>
             <a href=\"";
-        // line 42
+        // line 36
         echo $this->env->getExtension('routing')->getPath("category_new");
         echo "\">
                 Create a new entry
@@ -126,6 +107,6 @@ class __TwigTemplate_26e55d80b338d03367f04a9dc554179caab32c06579600da774020d6238
 
     public function getDebugInfo()
     {
-        return array (  108 => 42,  101 => 37,  89 => 31,  83 => 28,  74 => 24,  68 => 23,  64 => 22,  60 => 21,  54 => 20,  51 => 19,  47 => 18,  31 => 4,  28 => 3,);
+        return array (  89 => 36,  82 => 31,  70 => 25,  64 => 22,  57 => 18,  51 => 17,  48 => 16,  44 => 15,  31 => 4,  28 => 3,);
     }
 }

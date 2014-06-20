@@ -1,3 +1,8 @@
+category_like:
+    pattern:  /like
+    defaults: { _controller: "dvSSW2014Bundle:Category:like" }
+    requirements: { _method: post }
+
 category:
     pattern:  /
     defaults: { _controller: "dvSSW2014Bundle:Category:index" }
