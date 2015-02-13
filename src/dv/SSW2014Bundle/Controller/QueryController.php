@@ -20,6 +20,8 @@ class QueryController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $entities = $em->getRepository('dvSSW2014Bundle:Query')->findAll();
+        
+        $results = array();
 
         foreach ($entities as $entity)
         {
